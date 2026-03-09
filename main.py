@@ -37,13 +37,27 @@ with st.sidebar:
 # --- Helper Functions ---
 def get_google_sheet(sid):
     try:
-        # Looks for credentials.json in the same folder
-        gc = gspread.service_account(filename='credentials.json')
+        # Determine the absolute path to credentials.json
+        # This helps Streamlit find it regardless of how the app is launched
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        creds_path = os.path.join(current_dir, 'credentials.json')
+        
+        if not os.path.exists(creds_path):
+            st.error(f"❌ File Not Found: {creds_path}. Is it in the same folder as app.py?")
+            return None
+
+        # Authenticate
+        gc = gspread.service_account(filename=creds_path)
+        
+        # Try to open the sheet
         sh = gc.open_by_key(sid)
         return sh.sheet1
+        
+    except gspread.exceptions.SpreadsheetNotFound:
+        st.error("❌ Spreadsheet Not Found. Check your Sheet ID and ensure you shared the sheet with the Service Account email.")
     except Exception as e:
-        st.error(f"Google Sheet Connection Failed: {e}")
-        return None
+        st.error(f"❌ Connection Error: {str(e)}")
+    return None
 
 def find_contacts(client, name):
     query = f"{name} Singapore official email and office phone"
