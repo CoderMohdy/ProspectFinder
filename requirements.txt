@@ -1,0 +1,4 @@
+groq>=1.0.0
+tavily-python>=0.7.22
+requests
+beautifulsoup4
