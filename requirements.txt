@@ -1,4 +1,6 @@
-groq>=1.0.0
-tavily-python>=0.7.22
+groq
+tavily-python
 requests
 beautifulsoup4
+gspread
+streamlit
